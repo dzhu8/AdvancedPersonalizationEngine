@@ -7,7 +7,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-Back-End/.env
+**/.env
+.venv
 node_modules
 dist
 dist-ssr
@@ -26,3 +27,4 @@ dist-ssr
 
 # Pycache files
 /Back-End/__pycache__/
+
