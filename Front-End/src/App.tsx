@@ -1,60 +1,31 @@
-import { useState } from 'react'
-import './App.css'
 
-function App() {
-  // Track the currently selected PDF file
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import InstagramInput from "./pages/InstagramInput";
+import BrandSelection from "./pages/BrandSelection";
+import VideoOutput from "./pages/VideoOutput";
+import NotFound from "./pages/NotFound";
 
-  // Handle PDF file changes
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0])
-    } else {
-      setSelectedFile(null)
-    }
-  }
+const queryClient = new QueryClient();
 
-  // Placeholder for your "Play" action
-  const handlePlay = () => {
-    alert('Playing Personal Advertisement!')
-  }
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<InstagramInput />} />
+          <Route path="/brand-selection" element={<BrandSelection />} />
+          <Route path="/video-output" element={<VideoOutput />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
-  return (
-    <div className="App">
-      <header className="app-header">
-        <h1>Personal Advertisement Launch Page</h1>
-      </header>
-
-      <main className="dashboard-main">
-        {/* PDF Upload Section */}
-        <section className="upload-section">
-          <h2>Upload PDF</h2>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileChange}
-          />
-          {selectedFile && (
-            <p>
-              Selected file: <strong>{selectedFile.name}</strong>
-            </p>
-          )}
-        </section>
-
-        {/* "Play" Section */}
-        <section className="create-section">
-          <h2>Play Advertisement</h2>
-          <button onClick={handlePlay} className="btn-create">
-            Play
-          </button>
-        </section>
-      </main>
-
-      <footer className="dashboard-footer">
-        <p>All rights reserved - Personal Advertisement, Inc.</p>
-      </footer>
-    </div>
-  )
-}
-
-export default App
+export default App;

@@ -1,17 +1,3 @@
-/* 1. Basic Resets */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: sans-serif;
-  background-color: #fafafa;
-  color: #333;
-}
-
-/* 2. Root Container (if you're using #root in index.html) */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -19,30 +5,9 @@ body {
   text-align: center;
 }
 
-/* 3. (Optional) .App Container if your main div is .App */
-.App {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-/* 4. Header */
-.app-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.logo-container {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-/* 5. Logos & Hover Effects */
 .logo {
-  height: 4rem;           /* Adjust size as needed */
-  padding: 1.5em;         /* Keeps some spacing around the logos */
+  height: 6em;
+  padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
@@ -53,7 +18,6 @@ body {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-/* 6. Spin Animation for the Second Logo Link */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -62,63 +26,17 @@ body {
     transform: rotate(360deg);
   }
 }
+
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
-/* 7. Main Dashboard Layout */
-.dashboard-main {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: space-between;
-}
-
-/* 8. Sections: Upload & Create */
-.upload-section,
-.create-section {
-  flex: 1 1 300px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-h2 {
-  margin-bottom: 1rem;
-}
-
-/* 9. Create Button */
-.btn-create {
-  background-color: #646cff;
-  color: #fff;
-  padding: 0.6rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-.btn-create:hover {
-  background-color: #4c4cdd;
-}
-
-/* 10. Card Example (if you still use .card somewhere) */
 .card {
   padding: 2em;
 }
 
-/* 11. Footer */
-.dashboard-footer {
-  text-align: center;
-  margin-top: 2rem;
-  color: #888;
-}
-
-/* 12. Read-the-docs Text */
 .read-the-docs {
   color: #888;
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
 }
