@@ -1,22 +1,31 @@
-import PdfUploader from './Components/pdfUploader'
-import './App.css'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="app-header">
-        <h1>Personal Advertisement</h1>
-      </header>
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import InstagramInput from "./pages/InstagramInput";
+import BrandSelection from "./pages/BrandSelection";
+import VideoOutput from "./pages/VideoOutput";
+import NotFound from "./pages/NotFound";
 
-      <main className="dashboard-main">
-        <PdfUploader />
-      </main>
+const queryClient = new QueryClient();
 
-      <footer className="dashboard-footer">
-        <p>All rights reserved - Personal Advertisement, Inc.</p>
-      </footer>
-    </div>
-  )
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<InstagramInput />} />
+          <Route path="/brand-selection" element={<BrandSelection />} />
+          <Route path="/video-output" element={<VideoOutput />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
-export default App
+export default App;
