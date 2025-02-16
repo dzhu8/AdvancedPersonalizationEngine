@@ -88,7 +88,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                     ],
                 }
             ],
-            max_tokens=300,
+            max_tokens=1500,
         )
         return response.choices[0].message.content
 
@@ -111,7 +111,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                     ],
                 }
             ],
-            max_tokens=300,
+            max_tokens=1500,
         )
         return response.choices[0].message.content
 
@@ -176,7 +176,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                     {"role": "user", "content": followup_prompt}
                 ],
                 response_format={ "type": "json_object" },
-                max_tokens=500
+                max_tokens=1500
             )
             
             return response.choices[0].message.content
