@@ -162,8 +162,8 @@ The goal is to extract deep insights from their Instagram content to craft an AI
 
         return "Analysis completed"
 
-    async def process_followup(self, previous_analysis: str, followup_prompt: str) -> str:
-        """Process a followup prompt based on previous analysis"""
+    async def process_followup(self, previous_analysis: str, followup_prompt: str) -> dict:
+        """Process a followup prompt based on previous analysis and return JSON"""
         try:
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -172,10 +172,11 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                     {"role": "user", "content": "Here is the analysis of someone's Instagram profile:\n\n" + previous_analysis},
                     {"role": "user", "content": followup_prompt}
                 ],
-                max_tokens=500  # Increased token limit for detailed responses
+                response_format={ "type": "json_object" },
+                max_tokens=500
             )
             
             return response.choices[0].message.content
             
         except Exception as e:
-            return f"Error processing followup: {str(e)}" 
+            return {"error": f"Error processing followup: {str(e)}"} 
