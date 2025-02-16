@@ -1,9 +1,10 @@
 import base64
 from openai import OpenAI
 import os
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any
 from dotenv import load_dotenv
 import mimetypes
+from storyboard_generator import StoryboardGenerator
 
 class OpenAIHelper:
     def __init__(self):
@@ -34,6 +35,7 @@ class OpenAIHelper:
             filename: Name of the file (used to determine type)
             instructions: Optional instructions for analysis
         """
+        print("Calling analyze_file")
         default_prompt = """I want to create a hyper-personalized advertisement based on an individual's Instagram profile. I will provide a selection of their pictures. Analyze these images and extract detailed insights about their personality, lifestyle, aesthetic, and brand affinity. Your analysis should cover the following key aspects: 
 Interests & Activities - Identify their hobbies, passions, and frequently engaged activities. 
 Visual Aesthetic & Color Palette - Describe the dominant tones, styling, and mood of their content. 
@@ -44,10 +46,10 @@ Social & Lifestyle Indicators - Determine whether they engage in solo activities
 Emotional Tone & Vibe - Identify the overall emotional feel of their posts. 
 Media Type & Engagement Style - Note whether their content is video-heavy, photo-centric, or focused on reels/stories and analyze engagement style. 
 Potential Advertising Angles - Based on the extracted insights, suggest the best tone, visual style, and storytelling approach for a hyper-personalized ad that aligns naturally with their profile and resonates with their audience. 
-The goal is to extract deep insights from their Instagram content to craft an AI-generated video that seamlessly integrates with their aesthetic, lifestyle, and personality, making the advertisement feel natural, authentic, and engaging."""
+The goal is to extract deep insights from their Instagram content to craft an AI-generated video that seamlessly integrates with their aesthetic, lifestyle, and personality, making the advertisement feel natural, authentic, and engaging.
+"""
 
         prompt = instructions if instructions else default_prompt
-
         try:
             # Handle different file types
             if isinstance(file_input, str):
@@ -86,7 +88,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                     ],
                 }
             ],
-            max_tokens=300,
+            max_tokens=1500,
         )
         return response.choices[0].message.content
 
@@ -109,7 +111,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                     ],
                 }
             ],
-            max_tokens=300,
+            max_tokens=1500,
         )
         return response.choices[0].message.content
 
@@ -164,6 +166,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
 
     async def process_followup(self, previous_analysis: str, followup_prompt: str) -> dict:
         """Process a followup prompt based on previous analysis and return JSON"""
+        print("Calling process_followup")
         try:
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -173,10 +176,48 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                     {"role": "user", "content": followup_prompt}
                 ],
                 response_format={ "type": "json_object" },
-                max_tokens=500
+                max_tokens=1500
             )
             
             return response.choices[0].message.content
             
         except Exception as e:
-            return {"error": f"Error processing followup: {str(e)}"} 
+            return {"error": f"Error processing followup: {str(e)}"}
+
+    async def generate_complete_storyboard(
+        self,
+        file_input: Union[str, bytes],
+        filename: str = None,
+        instructions: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Complete workflow to analyze an image and generate a storyboard
+        
+        Args:
+            file_input: Either a URL string or file bytes
+            filename: Name of the file (used to determine type)
+            instructions: Optional custom instructions for initial analysis
+            
+        Returns:
+            Dict containing both the initial analysis and storyboard scenes
+        """
+        print("Calling generate_complete_storyboard")
+        try:
+            # Step 1: Initial image analysis
+            initial_analysis = await self.analyze_file(file_input, filename, instructions)
+            
+            # Step 2: Generate storyboard
+            storyboard_prompt = StoryboardGenerator.get_default_storyboard_prompt()
+            storyboard_json = await self.process_followup(initial_analysis, storyboard_prompt)
+            print(storyboard_json)
+            
+            # Step 3: Validate and parse the storyboard
+            scenes = StoryboardGenerator.validate_storyboard_json(storyboard_json)
+            
+            return {
+                "initial_analysis": initial_analysis,
+                "scenes": scenes
+            }
+            
+        except Exception as e:
+            raise Exception(f"Error generating storyboard: {str(e)}") 

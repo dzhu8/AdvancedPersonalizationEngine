@@ -66,6 +66,26 @@ async def process_prompt(
     except Exception as e:
         return {"error": str(e)}
 
+@app.post("/generate-storyboard")
+async def generate_storyboard(
+    file: UploadFile,
+    instructions: Optional[str] = Form(None)
+):
+    """
+    Generate a complete storyboard from an uploaded image
+    """
+    try:
+        file_data = await file.read()
+        result = await openai_helper.generate_complete_storyboard(
+            file_data,
+            filename=file.filename,
+            instructions=instructions
+        )
+        
+        return result
+    except Exception as e:
+        return {"error": str(e)}
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to the File Processing API"} 

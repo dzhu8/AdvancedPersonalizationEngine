@@ -1,208 +1,72 @@
 import requests
-import json
+from typing import Optional, Dict, Any
 
-def process_file_url(api_url: str, file_url: str, instructions: str = None):
+def generate_storyboard_from_image(
+    api_url: str,
+    image_path: str,
+    instructions: Optional[str] = None
+) -> Dict[str, Any]:
     """
-    Send a file URL (image or PDF) to the API for processing
+    Simple example of how to generate a storyboard from an image using the API
     
     Args:
-        api_url: The base URL of the API (e.g., 'http://localhost:8000')
-        file_url: URL of the file to analyze
-        instructions: Optional instructions for analysis
-    """
-    # Prepare the endpoint URL
-    endpoint = f"{api_url}/process-screenshot"
-    
-    # Prepare the form data
-    data = {
-        'file_url': file_url  # Changed from image_url to file_url to match app.py
-    }
-    
-    # Add instructions if provided
-    if instructions:
-        data['brand_instructions'] = instructions
-    
-    try:
-        # Make the POST request
-        response = requests.post(endpoint, data=data)
-        response.raise_for_status()  # Raise an exception for bad status codes
+        api_url: Base URL of the API (e.g., 'http://localhost:8000')
+        image_path: Path to the local image file
+        instructions: Optional custom instructions for analysis
         
-        # Print the raw response for debugging
-        print("Raw Response:", response.text)
-        
-        # Parse the JSON response
-        result = response.json()
-        
-        # Check if there's an error in the response
-        if 'error' in result:
-            print("Error from server:", result['error'])
-            return result
+    Returns:
+        Dict containing:
+            - initial_analysis: Raw analysis of the image
+            - scenes: Structured storyboard scenes
             
-        # Print the analysis if available
-        if 'analysis' in result:
-            print("Analysis Result:", result['analysis'])
-            
-            if 'brand_instructions' in result:
-                print("Used Instructions:", result['brand_instructions'])
-        else:
-            print("No analysis found in response")
-            print("Full response:", result)
-            
-        return result
+    Example:
+        result = generate_storyboard_from_image(
+            'http://localhost:8000',
+            'path/to/image.jpg',
+            'Optional custom instructions'
+        )
         
-    except requests.exceptions.RequestException as e:
-        print(f"Error making request: {e}")
-        return None
-    except ValueError as e:
-        print(f"Error parsing JSON response: {e}")
-        print("Raw response:", response.text)
-        return None
-
-def process_local_file(api_url: str, file_path: str, instructions: str = None):
+        # Access the results
+        analysis = result['initial_analysis']
+        scenes = result['scenes']
     """
-    Send a local file (image or PDF) to the API for processing
-    
-    Args:
-        api_url: The base URL of the API (e.g., 'http://localhost:8000')
-        file_path: Path to the local file
-        instructions: Optional instructions for analysis
-    """
-    # Prepare the endpoint URL
-    endpoint = f"{api_url}/process-screenshot"
+    endpoint = f"{api_url}/generate-storyboard"
     
     # Prepare the form data
     data = {}
     if instructions:
-        data['brand_instructions'] = instructions
-    
-    # Open and attach the file
-    with open(file_path, 'rb') as f:
+        data['instructions'] = instructions
+        
+    # Upload the image
+    with open(image_path, 'rb') as f:
         files = {
-            'file': (file_path.split('/')[-1], f, 'image/png')  # Assuming PNG, adjust if needed
+            'file': (image_path.split('/')[-1], f, 'image/png')
         }
         
-        try:
-            # Make the POST request with the file
-            response = requests.post(endpoint, data=data, files=files)
-            response.raise_for_status()
-            
-            # Print the raw response for debugging
-            print("Raw Response:", response.text)
-            
-            # Parse the JSON response
-            result = response.json()
-            
-            # Check if there's an error in the response
-            if 'error' in result:
-                print("Error from server:", result['error'])
-                return result
-                
-            # Print the analysis if available
-            if 'analysis' in result:
-                print("Analysis Result:", result['analysis'])
-                
-                if 'brand_instructions' in result:
-                    print("Used Instructions:", result['brand_instructions'])
-            else:
-                print("No analysis found in response")
-                print("Full response:", result)
-                
-            return result
-            
-        except requests.exceptions.RequestException as e:
-            print(f"Error making request: {e}")
-            return None
-        except ValueError as e:
-            print(f"Error parsing JSON response: {e}")
-            print("Raw response:", response.text)
-            return None
+        # Make the request
+        response = requests.post(endpoint, data=data, files=files)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        
+        return response.json()
 
-def process_followup_prompt(api_url: str, previous_analysis: str, followup_prompt: str):
-    """
-    Send a followup prompt based on previous analysis
-    
-    Args:
-        api_url: The base URL of the API (e.g., 'http://localhost:8000')
-        previous_analysis: The analysis from the first call
-        followup_prompt: The prompt for further analysis
-    """
-    # Prepare the endpoint URL
-    endpoint = f"{api_url}/process-prompt"
-    
-    # Prepare the form data
-    data = {
-        'previous_analysis': previous_analysis,
-        'followup_prompt': followup_prompt
-    }
-    
-    try:
-        # Make the POST request
-        response = requests.post(endpoint, data=data)
-        response.raise_for_status()
-        
-        # Print the raw response for debugging
-        print("\nFollowup Analysis Raw Response:", response.text)
-        
-        # Parse the JSON response
-        result = response.json()
-        
-        # Check if there's an error in the response
-        if 'error' in result:
-            print("Error from server:", result['error'])
-            return result
-            
-        # Print the analysis if available
-        if 'analysis' in result:
-            print("\nFollowup Analysis Result:", result['analysis'])
-        else:
-            print("No analysis found in response")
-            print("Full response:", result)
-            
-        return result
-        
-    except requests.exceptions.RequestException as e:
-        print(f"Error making request: {e}")
-        return None
-    except ValueError as e:
-        print(f"Error parsing JSON response: {e}")
-        print("Raw response:", response.text)
-        return None
-
+# Example usage
 if __name__ == "__main__":
-    # Example usage
-    API_URL = "http://localhost:8000"
-    FILE_PATH = "/home/navid/Pictures/Screenshots/IG_profile_example.png"
-    
-    print("\nAnalyzing Local Image...")
-    initial_result = process_local_file(API_URL, FILE_PATH)
-    
-    if initial_result and 'analysis' in initial_result:
-        # Detailed storyboard prompt
-        FOLLOWUP_PROMPT = """Using the provided characteristics, create a detailed 20-second storyboard for a high-energy Coca-Cola advertisement tailored to this individual. The storyboard should be optimized for AI video generation software (e.g., Sora, Runway, Minimax, Luma) and include the following details:
-Scene Breakdown – Provide a structured sequence of shots, ensuring smooth transitions and a compelling narrative arc.
-Camera Movements – Specify shot types to enhance the cinematic feel.
-Lighting & Mood – Define the lighting conditions and overall atmosphere.
-Environmental Details – Include background elements that interact with the subject.
-subject descrption: Describe the subject's appearence in each scene. Always describe the subject in each scene
-Subject Actions & Expressions – Clearly describe movements, facial expressions, and interactions with Coca-Cola to evoke refreshment, excitement, and freedom.
-Editing & Transitions – Indicate pacing to create dynamic storytelling.
-Audio & Sound Design – Include ambient sounds, music choices, and key sound effects .
-Color Palette & Visual Style – Describe the aesthetic using Coca-Cola's signature reds, deep ocean blues, and golden tones for an aspirational, lifestyle-focused look.
-Text & Branding Elements – Ensure Coca-Cola branding, tagline placement, and product visibility are naturally integrated within the visuals. Instead of using the persons name, describe him briefly DO not use emojis
-Describe the actions as easy as possible and as clear as possible
-Each scene should start with the description what the subject looks like physically.
-
-Return the JSON object only, with each scene as a key.
-"""
+    # Example of how to use the API
+    try:
+        result = generate_storyboard_from_image(
+            api_url="http://localhost:8000",
+            image_path="/home/navid/Pictures/Screenshots/IG_profile_example.png"
+        )
         
-        print("\nProcessing followup analysis...")
-        followup_result = process_followup_prompt(API_URL, initial_result['analysis'], FOLLOWUP_PROMPT)
+        print("\nInitial Analysis:")
+        print(result['initial_analysis'])
         
-        # Pretty print the JSON response
-        if followup_result and 'analysis' in followup_result:
-            try:
-                json_response = followup_result['analysis']
-                print("\nStructured Storyboard:")
-                print(json.dumps(json_response, indent=2))
-            except Exception as e:
-                print(f"Error parsing JSON response: {e}") 
+        print("\nStoryboard Scenes:")
+        for scene_num, scene_details in result['scenes'].items():
+            print(f"\nScene {scene_num}:")
+            print(scene_details)
+            
+    except requests.exceptions.RequestException as e:
+        print(f"Error calling API: {e}")
+    except KeyError as e:
+        print(f"Unexpected response format: {e}") 
