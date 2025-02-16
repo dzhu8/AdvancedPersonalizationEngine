@@ -22,7 +22,7 @@ function App() {
   return (
     <div className="App">
       <header className="app-header">
-        <h1>Personal Advertisement Launch Page</h1>
+        <h1>Personal Advertisement</h1>
       </header>
 
       <main className="dashboard-main">
