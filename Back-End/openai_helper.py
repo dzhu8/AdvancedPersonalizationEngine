@@ -35,6 +35,7 @@ class OpenAIHelper:
             filename: Name of the file (used to determine type)
             instructions: Optional instructions for analysis
         """
+        print("Calling analyze_file")
         default_prompt = """I want to create a hyper-personalized advertisement based on an individual's Instagram profile. I will provide a selection of their pictures. Analyze these images and extract detailed insights about their personality, lifestyle, aesthetic, and brand affinity. Your analysis should cover the following key aspects: 
 Interests & Activities - Identify their hobbies, passions, and frequently engaged activities. 
 Visual Aesthetic & Color Palette - Describe the dominant tones, styling, and mood of their content. 
@@ -165,6 +166,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
 
     async def process_followup(self, previous_analysis: str, followup_prompt: str) -> dict:
         """Process a followup prompt based on previous analysis and return JSON"""
+        print("Calling process_followup")
         try:
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -199,6 +201,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
         Returns:
             Dict containing both the initial analysis and storyboard scenes
         """
+        print("Calling generate_complete_storyboard")
         try:
             # Step 1: Initial image analysis
             initial_analysis = await self.analyze_file(file_input, filename, instructions)
@@ -206,6 +209,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
             # Step 2: Generate storyboard
             storyboard_prompt = StoryboardGenerator.get_default_storyboard_prompt()
             storyboard_json = await self.process_followup(initial_analysis, storyboard_prompt)
+            print(storyboard_json)
             
             # Step 3: Validate and parse the storyboard
             scenes = StoryboardGenerator.validate_storyboard_json(storyboard_json)
