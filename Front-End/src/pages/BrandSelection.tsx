@@ -1,8 +1,8 @@
-
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { useAdContext } from "../context/AdContext";
 
 const BRANDS = [
   {
@@ -19,12 +19,78 @@ const BRANDS = [
 ];
 
 const BrandSelection = () => {
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { selectedFile, selectedBrand, setSelectedBrand } = useAdContext();
 
-  const handleNext = () => {
-    if (selectedBrand) {
+  const handleBrandSelect = (brandId: string) => {
+    setSelectedBrand(brandId);
+    console.log("Selected brand:", brandId);
+  };
+
+  const handleNext = async () => {
+    if (!selectedFile) {
+      toast({
+        title: "No file uploaded",
+        description: "Please go back and upload a file first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!selectedBrand) {
+      toast({
+        title: "No brand selected",
+        description: "Please select a brand before continuing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Detect if we're on localhost
+    const isLocalhost = window.location.hostname.includes("localhost");
+    // If true, point to local Uvicorn server, else production.
+    const uploadUrl = isLocalhost
+      ? "http://127.0.0.1:8000/upload"
+      : "https://sundai-backend.ryanhughes624.com/upload";
+
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("brand", selectedBrand);
+
+      console.log("Sending to:", uploadUrl);
+      console.log("File:", selectedFile);
+      console.log("Brand:", selectedBrand);
+
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Server error response:", errorData);
+        toast({
+          title: "Upload failed",
+          description: errorData?.message || "Something went wrong on the server.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success!",
+        description: "Your brand and file have been uploaded.",
+      });
+
       navigate("/video-output");
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Error",
+        description: "Unable to upload. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -41,12 +107,16 @@ const BrandSelection = () => {
             {BRANDS.map((brand) => (
               <button
                 key={brand.id}
-                onClick={() => !brand.disabled && setSelectedBrand(brand.id)}
                 disabled={brand.disabled}
+                onClick={() => !brand.disabled && handleBrandSelect(brand.id)}
                 className={`
                   relative p-6 rounded-lg hover-scale
                   ${brand.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                  ${selectedBrand === brand.id ? 'ring-2 ring-primary shadow-lg' : 'bg-white/50'}
+                  ${
+                    selectedBrand === brand.id
+                      ? 'ring-2 ring-primary shadow-lg'
+                      : 'bg-white/50'
+                  }
                   transition-all duration-300 ease-in-out
                 `}
               >
