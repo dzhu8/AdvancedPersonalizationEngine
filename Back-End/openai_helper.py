@@ -46,8 +46,7 @@ Emotional Tone & Vibe - Identify the overall emotional feel of their posts.
 Media Type & Engagement Style - Note whether their content is video-heavy, photo-centric, or focused on reels/stories and analyze engagement style. 
 Potential Advertising Angles - Based on the extracted insights, suggest the best tone, visual style, and storytelling approach for a hyper-personalized ad that aligns naturally with their profile and resonates with their audience. 
 The goal is to extract deep insights from their Instagram content to craft an AI-generated video that seamlessly integrates with their aesthetic, lifestyle, and personality, making the advertisement feel natural, authentic, and engaging.
-
-Return the JSON object only, with each scene as a key."""
+"""
 
         prompt = instructions if instructions else default_prompt
         try:
