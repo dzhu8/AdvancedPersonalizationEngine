@@ -1,44 +1,72 @@
 import requests
-import json
 from typing import Optional, Dict, Any
 
-
-class APIClient:
-    def __init__(self, api_url: str):
-        self.api_url = api_url
-
-    def generate_storyboard(
-        self,
-        image_path: str,
-        instructions: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """
-        Generate a complete storyboard from an image
+def generate_storyboard_from_image(
+    api_url: str,
+    image_path: str,
+    instructions: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Simple example of how to generate a storyboard from an image using the API
+    
+    Args:
+        api_url: Base URL of the API (e.g., 'http://localhost:8000')
+        image_path: Path to the local image file
+        instructions: Optional custom instructions for analysis
         
-        Args:
-            image_path: Path to the local image file
-            instructions: Optional custom instructions
+    Returns:
+        Dict containing:
+            - initial_analysis: Raw analysis of the image
+            - scenes: Structured storyboard scenes
             
-        Returns:
-            Dict containing analysis and storyboard scenes
-        """
-        endpoint = f"{self.api_url}/generate-storyboard"
+    Example:
+        result = generate_storyboard_from_image(
+            'http://localhost:8000',
+            'path/to/image.jpg',
+            'Optional custom instructions'
+        )
         
-        data = {}
-        if instructions:
-            data['instructions'] = instructions
-            
-        with open(image_path, 'rb') as f:
-            files = {
-                'file': (image_path.split('/')[-1], f, 'image/png')
-            }
-            
-            response = requests.post(endpoint, data=data, files=files)
-            response.raise_for_status()
-            return response.json()
+        # Access the results
+        analysis = result['initial_analysis']
+        scenes = result['scenes']
+    """
+    endpoint = f"{api_url}/generate-storyboard"
+    
+    # Prepare the form data
+    data = {}
+    if instructions:
+        data['instructions'] = instructions
+        
+    # Upload the image
+    with open(image_path, 'rb') as f:
+        files = {
+            'file': (image_path.split('/')[-1], f, 'image/png')
+        }
+        
+        # Make the request
+        response = requests.post(endpoint, data=data, files=files)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        
+        return response.json()
 
 # Example usage
 if __name__ == "__main__":
-    client = APIClient("http://localhost:8000")
-    result = client.generate_storyboard("/home/navid/Pictures/Screenshots/IG_profile_example.png")
-    print(result) 
+    # Example of how to use the API
+    try:
+        result = generate_storyboard_from_image(
+            api_url="http://localhost:8000",
+            image_path="/home/navid/Pictures/Screenshots/IG_profile_example.png"
+        )
+        
+        print("\nInitial Analysis:")
+        print(result['initial_analysis'])
+        
+        print("\nStoryboard Scenes:")
+        for scene_num, scene_details in result['scenes'].items():
+            print(f"\nScene {scene_num}:")
+            print(scene_details)
+            
+    except requests.exceptions.RequestException as e:
+        print(f"Error calling API: {e}")
+    except KeyError as e:
+        print(f"Unexpected response format: {e}") 
