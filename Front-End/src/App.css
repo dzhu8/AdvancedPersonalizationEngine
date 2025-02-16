@@ -122,3 +122,26 @@ h2 {
   margin-top: 0.5rem;
   font-size: 0.9rem;
 }
+
+/* Basic styles or your existing ones */
+.App {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.app-header, .dashboard-footer {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-main {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
