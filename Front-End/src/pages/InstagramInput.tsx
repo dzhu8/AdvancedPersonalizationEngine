@@ -1,27 +1,40 @@
-
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+// Inside BrandSelection.tsx
+import { useAdContext } from "../context/AdContext";
 
-const InstagramInput = () => {
-  const [instagramUrl, setInstagramUrl] = useState("");
+
+const FileUploadPage = () => {
   const navigate = useNavigate();
+  const { selectedFile, setSelectedFile } = useAdContext(); // <-- from Context
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    } else {
+      setSelectedFile(null);
+    }
+  };
+
+  // We'll just navigate next without uploading here:
+  const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!instagramUrl.includes("instagram.com/")) {
+
+    // Basic validation
+    if (!selectedFile) {
       toast({
-        title: "Invalid Instagram URL",
-        description: "Please enter a valid Instagram profile URL",
+        title: "No file selected",
+        description: "Please select a JPEG file",
         variant: "destructive",
       });
       return;
     }
 
+    // Move to brand selection
     navigate("/brand-selection");
   };
 
@@ -31,30 +44,36 @@ const InstagramInput = () => {
         <div className="space-y-6">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-semibold tracking-tight">Ad4You</h1>
-            <p className="text-muted-foreground">Enter an Instagram profile URL to get started</p>
+            <p className="text-muted-foreground">
+              Please upload your JPEG/JPG of your persona
+            </p>
           </div>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="relative">
+
+          <form onSubmit={handleNext} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
+                Upload JPEG
+              </label>
               <Input
-                type="text"
-                placeholder="https://instagram.com/username"
-                value={instagramUrl}
-                onChange={(e) => setInstagramUrl(e.target.value)}
-                className="w-full h-12 pl-4 pr-12 text-lg bg-white/50 border-2 border-primary/20 focus:border-primary/50 focus:ring-0 transition-all duration-300"
+                type="file"
+                accept="image/jpeg, image/jpg"
+                onChange={handleFileChange}
+                className="bg-white/50 border-2 border-primary/20 
+                           focus:border-primary/50 focus:ring-0 
+                           transition-all duration-300"
               />
-              <Button 
-                type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 hover-scale"
-              >
-                Next
-              </Button>
             </div>
+            <Button 
+              type="submit" 
+              disabled={!selectedFile}
+              className="w-full h-12 mt-4"
+            >
+              Next
+            </Button>
           </form>
-          
+
           <div className="text-sm text-center text-muted-foreground">
-            <p className="font-medium">Important:</p>
-            <p>The Instagram profile must be set to private for optimal results</p>
+            <p>Make sure to choose the correct file before proceeding.</p>
           </div>
         </div>
       </Card>
@@ -62,4 +81,4 @@ const InstagramInput = () => {
   );
 };
 
-export default InstagramInput;
+export default FileUploadPage;
