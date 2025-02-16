@@ -50,8 +50,8 @@ const BrandSelection = () => {
     const isLocalhost = window.location.hostname.includes("localhost");
     // If true, point to local Uvicorn server, else production.
     const uploadUrl = isLocalhost
-      ? "http://127.0.0.1:8000/upload"
-      : "https://sundai-backend.ryanhughes624.com/upload";
+      ? "http://127.0.0.1:8000/process-screenshot"
+      : "https://sundai-backend.ryanhughes624.com/process-screenshot";
 
     try {
       const formData = new FormData();

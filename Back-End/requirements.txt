@@ -3,4 +3,4 @@ python-multipart==0.0.6
 uvicorn==0.24.0
 requests==2.31.0
 openai==1.63.0
-dotenv==0.0.5
+python-dotenv
