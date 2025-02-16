@@ -1,5 +1,6 @@
 import requests
 import json
+from typing import Optional, Dict, Any
 
 def process_file_url(api_url: str, file_url: str, instructions: str = None):
     """
@@ -168,41 +169,42 @@ def process_followup_prompt(api_url: str, previous_analysis: str, followup_promp
         print("Raw response:", response.text)
         return None
 
-if __name__ == "__main__":
-    # Example usage
-    API_URL = "http://localhost:8000"
-    FILE_PATH = "/home/navid/Pictures/Screenshots/IG_profile_example.png"
-    
-    print("\nAnalyzing Local Image...")
-    initial_result = process_local_file(API_URL, FILE_PATH)
-    
-    if initial_result and 'analysis' in initial_result:
-        # Detailed storyboard prompt
-        FOLLOWUP_PROMPT = """Using the provided characteristics, create a detailed 20-second storyboard for a high-energy Coca-Cola advertisement tailored to this individual. The storyboard should be optimized for AI video generation software (e.g., Sora, Runway, Minimax, Luma) and include the following details:
-Scene Breakdown – Provide a structured sequence of shots, ensuring smooth transitions and a compelling narrative arc.
-Camera Movements – Specify shot types to enhance the cinematic feel.
-Lighting & Mood – Define the lighting conditions and overall atmosphere.
-Environmental Details – Include background elements that interact with the subject.
-subject descrption: Describe the subject's appearence in each scene. Always describe the subject in each scene
-Subject Actions & Expressions – Clearly describe movements, facial expressions, and interactions with Coca-Cola to evoke refreshment, excitement, and freedom.
-Editing & Transitions – Indicate pacing to create dynamic storytelling.
-Audio & Sound Design – Include ambient sounds, music choices, and key sound effects .
-Color Palette & Visual Style – Describe the aesthetic using Coca-Cola's signature reds, deep ocean blues, and golden tones for an aspirational, lifestyle-focused look.
-Text & Branding Elements – Ensure Coca-Cola branding, tagline placement, and product visibility are naturally integrated within the visuals. Instead of using the persons name, describe him briefly DO not use emojis
-Describe the actions as easy as possible and as clear as possible
-Each scene should start with the description what the subject looks like physically.
+class APIClient:
+    def __init__(self, api_url: str):
+        self.api_url = api_url
 
-Return the JSON object only, with each scene as a key.
-"""
+    def generate_storyboard(
+        self,
+        image_path: str,
+        instructions: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Generate a complete storyboard from an image
         
-        print("\nProcessing followup analysis...")
-        followup_result = process_followup_prompt(API_URL, initial_result['analysis'], FOLLOWUP_PROMPT)
+        Args:
+            image_path: Path to the local image file
+            instructions: Optional custom instructions
+            
+        Returns:
+            Dict containing analysis and storyboard scenes
+        """
+        endpoint = f"{self.api_url}/generate-storyboard"
         
-        # Pretty print the JSON response
-        if followup_result and 'analysis' in followup_result:
-            try:
-                json_response = followup_result['analysis']
-                print("\nStructured Storyboard:")
-                print(json.dumps(json_response, indent=2))
-            except Exception as e:
-                print(f"Error parsing JSON response: {e}") 
+        data = {}
+        if instructions:
+            data['instructions'] = instructions
+            
+        with open(image_path, 'rb') as f:
+            files = {
+                'file': (image_path.split('/')[-1], f, 'image/png')
+            }
+            
+            response = requests.post(endpoint, data=data, files=files)
+            response.raise_for_status()
+            return response.json()
+
+# Example usage
+if __name__ == "__main__":
+    client = APIClient("http://localhost:8000")
+    result = client.generate_storyboard("/home/navid/Pictures/Screenshots/IG_profile_example.png")
+    print(result) 
