@@ -35,7 +35,7 @@ def create_video_generation_task(prompt, model="T2V-01"):
     }
     
     response = requests.post(url, headers=headers, json=payload)
-    
+    print(response.json())
     if response.status_code == 200:
         task_id = response.json().get("task_id")
         print(f"Video generation task submitted successfully. Task ID: {task_id}")
