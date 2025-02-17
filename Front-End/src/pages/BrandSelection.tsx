@@ -31,6 +31,21 @@ const BrandSelection = () => {
     console.log("Selected brand:", brandId);
   };
 
+  const checkMergedVideoExists = async (): Promise<boolean> => {
+    const isLocalhost = window.location.hostname.includes("localhost");
+    const mergedVideoUrl = isLocalhost
+      ? "http://127.0.0.1:8000/videos/merged_video.mp4"
+      : "https://sundai-backend.ryanhughes624.com/videos/merged_video.mp4";
+
+    try {
+      const response = await fetch(mergedVideoUrl, { method: "HEAD" });
+      return response.ok;
+    } catch (error) {
+      console.error("Error checking merged video:", error);
+      return false;
+    }
+  };
+
   const handleNext = async () => {
     if (!selectedFile) {
       toast({
@@ -50,35 +65,17 @@ const BrandSelection = () => {
       return;
     }
 
-    // Detect if we're on localhost
-    const isLocalhost = window.location.hostname.includes("localhost");
-    const uploadUrl = isLocalhost
-      ? "http://127.0.0.1:8000/generate-storyboard"
-      : "https://sundai-backend.ryanhughes624.com/generate-storyboard";
+    // Start the loading spinner
+    setIsLoading(true);
 
     try {
-      // 2. Set loading to true before starting the request
-      setIsLoading(true);
-
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("brand", selectedBrand);
-
-      console.log("Sending to:", uploadUrl);
-      console.log("File:", selectedFile);
-      console.log("Brand:", selectedBrand);
-
-      const response = await fetch(uploadUrl, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("Server error response:", errorData);
+      // Check if the merged video file exists
+      const videoFound = await checkMergedVideoExists();
+      if (!videoFound) {
         toast({
-          title: "Upload failed",
-          description: errorData?.message || "Something went wrong on the server.",
+          title: "Merged video not found",
+          description:
+            "The merged video file hasn't been processed or is unavailable yet. Please try again later.",
           variant: "destructive",
         });
         return;
@@ -86,26 +83,25 @@ const BrandSelection = () => {
 
       toast({
         title: "Success!",
-        description: "Your brand and file have been uploaded.",
+        description: "Processing complete. Redirecting to video output...",
       });
-
+      // Navigate to the VideoOutput page if the video exists
       navigate("/video-output");
     } catch (error) {
-      console.error("Upload error:", error);
+      console.error("Error during processing:", error);
       toast({
         title: "Error",
-        description: "Unable to upload. Please try again.",
+        description: "An error occurred during processing. Please try again.",
         variant: "destructive",
       });
     } finally {
-      // 2b. Stop the spinner
+      // Stop the spinner
       setIsLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
-      {/* 3. If isLoading, show some overlay or spinner */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="flex items-center text-white space-x-2">
@@ -136,7 +132,9 @@ const BrandSelection = () => {
       <Card className="w-full max-w-4xl p-8 glass-effect fade-in">
         <div className="space-y-8">
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-semibold tracking-tight">Select a Brand</h1>
+            <h1 className="text-3xl font-semibold tracking-tight">
+              Select a Brand
+            </h1>
             <p className="text-muted-foreground">
               Choose the brand you want to create an ad for
             </p>
@@ -147,19 +145,13 @@ const BrandSelection = () => {
               <button
                 key={brand.id}
                 disabled={brand.disabled}
-                onClick={() => !brand.disabled && handleBrandSelect(brand.id)}
+                onClick={() =>
+                  !brand.disabled && handleBrandSelect(brand.id)
+                }
                 className={`
                   relative p-6 rounded-lg hover-scale
-                  ${
-                    brand.disabled
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer"
-                  }
-                  ${
-                    selectedBrand === brand.id
-                      ? "ring-2 ring-primary shadow-lg"
-                      : "bg-white/50"
-                  }
+                  ${brand.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                  ${selectedBrand === brand.id ? "ring-2 ring-primary shadow-lg" : "bg-white/50"}
                   transition-all duration-300 ease-in-out
                 `}
               >
@@ -180,7 +172,7 @@ const BrandSelection = () => {
           <div className="flex justify-center">
             <Button
               onClick={handleNext}
-              disabled={!selectedBrand || isLoading} 
+              disabled={!selectedBrand || isLoading}
               className="px-8 py-6 text-lg hover-scale"
             >
               {isLoading ? "Processing..." : "Next"}
