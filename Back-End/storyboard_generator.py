@@ -17,7 +17,7 @@ Color Palette & Visual Style – Describe the aesthetic using Coca-Cola's signat
 Text & Branding Elements – Ensure Coca-Cola branding, tagline placement, and product visibility are naturally integrated within the visuals. Instead of using the persons name, describe him briefly DO not use emojis
 Describe the actions as easy as possible and as clear as possible
 Each scene should start with the description what the subject looks like physically.
-Create up to 3 scenes.
+Exactly 4 scenes. The last one should be a display of the Coca-Cola logo.
 
 Return the JSON object only, with each scene as a key."""
 

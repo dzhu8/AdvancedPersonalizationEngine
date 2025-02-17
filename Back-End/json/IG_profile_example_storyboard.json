@@ -1,52 +1,35 @@
 {
   "scene1": {
-    "subject": "A young athletic man with sun-kissed skin, tousled hair, wearing board shorts and a wet t-shirt, stands on the beach with waves crashing behind him.",
-    "actions": "He smiles broadly, stretches his arms wide to embrace the ocean breeze, and holds an ice-cold Coca-Cola in his hand.",
-    "camera": "Wide shot capturing the beach and ocean, slowly zooming in on the subject.",
-    "lighting": "Bright, natural sunlight with a warm golden glow.",
-    "environment": "Sandy beach with vibrant greenery and surfboards in the background.",
-    "audio": "Sound of waves crashing, upbeat music begins to play.",
-    "color_palette": "Warm golden tones contrasting with deep ocean blues.",
-    "text": "Coca-Cola logo displayed in the corner."
+    "subject_description": "A fit male with sun-kissed skin, tousled hair, wearing vibrant board shorts and a tank top, stands on a sunlit beach at sunrise.",
+    "actions_and_expressions": "He smiles widely, exuding excitement, as he holds a chilled Coca-Cola bottle, the droplets glistening in the morning light.",
+    "camera_movements": "A low-angle shot captures him stepping onto the sand, emphasizing his confident posture. The camera then pans up to reveal the endless ocean behind him.",
+    "lighting_and_mood": "Soft golden hues from the rising sun create an inviting and warm atmosphere.",
+    "environmental_details": "The beach is alive with gentle waves lapping at the shore and seagulls soaring in the sky.",
+    "editing_and_transitions": "Quick cuts to capture his excitement as he uncaps the bottle, leading into the next scene.",
+    "audio_and_sound_design": "Upbeat, energetic music begins, accompanied by the soothing sounds of the ocean waves.",
+    "color_palette_and_visual_style": "The scene contrasts Coca-Cola's vibrant reds against the deep blues of the ocean and golden sands.",
+    "text_and_branding_elements": "The iconic Coca-Cola logo appears in the corner as the tagline 'Taste the Adventure' fades in."
   },
   "scene2": {
-    "subject": "The same young man appears now on his surfboard, gliding effortlessly on a wave.",
-    "actions": "He lifts his head proudly, hair flying back. With one hand, he takes a sip from a Coca-Cola can stashed nearby on the board, exuding a carefree energy.",
-    "camera": "Medium shot from a low angle tracking him as he rides the wave.",
-    "lighting": "Brilliant sunlight reflecting off the water.",
-    "environment": "Rolling waves, with seagulls flying in the background.",
-    "audio": "Sounds of surfboards cutting through water, music builds with intensity.",
-    "color_palette": "Bright blues and foamy whites highlighting the action.",
-    "text": "Coca-Cola tagline appears: 'Taste the Adventure!'"
+    "subject_description": "The same fit male, now with sunglasses and holding the Coca-Cola bottle with both hands, runs along the beach.",
+    "actions_and_expressions": "He laughs joyfully, splashing through the water, showcasing sheer freedom and a lively spirit.",
+    "camera_movements": "A tracking shot follows him from behind, capturing his quick strides as the camera tilts slightly to highlight the ocean beside him.",
+    "lighting_and_mood": "Bright and sunny, with reflections shimmering off the water, creating a cheerful vibe.",
+    "environmental_details": "Waves crash around his feet, and beach goers in the background enjoy their day, enhancing the festive atmosphere.",
+    "editing_and_transitions": "A quick jump cut as he takes a refreshing sip from the bottle before transitioning to the next scene.",
+    "audio_and_sound_design": "The music intensifies with a faster beat, complemented by the sounds of laughter and waves crashing.",
+    "color_palette_and_visual_style": "The scene is filled with vibrant colors, with the Coca-Cola red popping against the blues and greens of the environment.",
+    "text_and_branding_elements": "The screen briefly features 'Share the Joy' as he runs, then fades to a close-up of him taking a sip."
   },
   "scene3": {
-    "subject": "Cut to the young man standing on the beach with friends, all wearing beachwear, laughing together.",
-    "actions": "He throws his head back in laughter, raising his Coca-Cola for a toast with his friends.",
-    "camera": "Close-up of their joyful expressions, panning to a wide shot of the group.",
-    "lighting": "Golden hour light casting long shadows; the mood feels warm and inviting.",
-    "environment": "A lively beach scene with beach towels, surfboards, and a friendly vibe.",
-    "audio": "Laughter of friends coupled with catchy music, the sound of a can opening.",
-    "color_palette": "Vibrant reds of Coca-Cola contrasting with sand and water hues.",
-    "text": "Coca-Cola logo appears prominently at center."
-  },
-  "scene4": {
-    "subject": "The young man, now back in the water, is diving into a wave, showcasing his skills.",
-    "actions": "As he comes up for air, he grins and gives a thumbs-up while holding a Coca-Cola bottle that he just took a sip from.",
-    "camera": "Underwater shot followed by a slow-motion surface shot capturing his infectious smile.",
-    "lighting": "Sunlight filtering through the water, creating sparkles.",
-    "environment": "Clear water with rolling waves and rays of sunlight.",
-    "audio": "Bubbling water sounds, with music reaching a climax.",
-    "color_palette": "Aquatic blues paired with bright Coca-Cola reds.",
-    "text": "Final tagline: 'Feeling Good, Taste Great!' with logo."
-  },
-  "scene5": {
-    "subject": "The young man is now on a beach bonfire in the evening, surrounded by friends, smiling widely.",
-    "actions": "He takes a refreshing sip of Coca-Cola, and shares a playful moment while dancing under the stars.",
-    "camera": "Wide shot capturing the bonfire glow, then transitioning to close-ups of laughing faces.",
-    "lighting": "Warm, soft light from the fire contrasted with the night sky.",
-    "environment": "A cozy bonfire setup with blankets and beach chairs.",
-    "audio": "Crackling fire sounds, soft upbeat song complementing laughter.",
-    "color_palette": "Warm reds from the fire and Coca-Cola against deep night blues.",
-    "text": "Coca-Cola logo prominently displayed, emphasizing community."
+    "subject_description": "The fit male sits on a beach towel, now with a group of friends, all clad in casual beachwear, the Coca-Cola bottle prominently in the foreground.",
+    "actions_and_expressions": "He leans back, laughing with his friends, sharing the Coca-Cola, radiating a sense of community and joy.",
+    "camera_movements": "A wide shot captures the group interacting, then transitions to a close-up of their hands reaching for the bottle.",
+    "lighting_and_mood": "Afternoon sunlight bathes the scene in warmth, fostering a relaxed, happy atmosphere.",
+    "environmental_details": "Beach umbrellas dot the landscape, and a volleyball net can be seen in the distance, highlighting a lively beach culture.",
+    "editing_and_transitions": "Slow-motion shots of shared laughter as they toast with their Coca-Cola bottles, seamlessly transitioning to the final branding shot.",
+    "audio_and_sound_design": "The music softens, filled with laughter and cheers, as the sound of the Coca-Cola fizz adds a refreshing touch.",
+    "color_palette_and_visual_style": "The scene showcases Coca-Cola's reds intertwined with the beach's natural colors, creating an inviting and vibrant backdrop.",
+    "text_and_branding_elements": "The commercial closes with the Coca-Cola logo and the tagline 'Live in the Moment' boldly displayed on-screen as they enjoy their drinks."
   }
 }
