@@ -240,17 +240,14 @@ Specifically, from the provided images, focus on these key aspects:
         print("Calling generate_complete_storyboard")
         try:
             # Step 1: Initial image analysis
-            import pdb; pdb.set_trace()
             initial_analysis = await self.analyze_file(file_input, filename, instructions)
             
             # Step 2: Generate storyboard
-            import pdb; pdb.set_trace()
             storyboard_prompt = StoryboardGenerator.get_default_storyboard_prompt()
             storyboard_json = await self.process_followup(initial_analysis, storyboard_prompt)
             print(storyboard_json)
             
             # Step 3: Validate and parse the storyboard
-            import pdb; pdb.set_trace()
             scenes = StoryboardGenerator.validate_storyboard_json(storyboard_json)
             print(scenes)
             
