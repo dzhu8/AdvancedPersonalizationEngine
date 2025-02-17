@@ -55,7 +55,7 @@ def query_video_status(task_id):
     }
 
     response = requests.get(url, headers=headers)
-
+    print(response.json())
     if response.status_code == 200:
         data = response.json()
         status = data.get("status")
@@ -116,24 +116,25 @@ def test_api_connection():
 
 if __name__ == "__main__":
         
-    # Test API connection first
-    if not test_api_connection():
-        print("Exiting due to API connection failure")
-        exit(1)
+    # # Test API connection first
+    # if not test_api_connection():
+    #     print("Exiting due to API connection failure")
+    #     exit(1)
         
-    # Step 1: Submit the video generation task
-    task_id = create_video_generation_task(PROMPT, MODEL)
+    # # Step 1: Submit the video generation task
+    # task_id = create_video_generation_task(PROMPT, MODEL)
     
-    if task_id:
-        # Step 2: Poll for task completion
-        while True:
-            time.sleep(10)  # Wait 10 seconds before polling again
-            status, file_id = query_video_status(task_id)
+    # if task_id:
+    #     # Step 2: Poll for task completion
+    #     while True:
+    #         time.sleep(10)  # Wait 10 seconds before polling again
+    #         status, file_id = query_video_status(task_id)
 
-            if status == "Success" and file_id:
-                # Step 3: Download the video
-                download_video(file_id, OUTPUT_FILE)
-                break
-            elif status == "Fail":
-                print("Video generation failed.")
-                break
+    #         if status == "Success" and file_id:
+    #             # Step 3: Download the video
+    #             download_video(file_id, OUTPUT_FILE)
+    #             break
+    #         elif status == "Fail":
+    #             print("Video generation failed.")
+    #             break
+    print(query_video_status("238388714660066"))

@@ -4,7 +4,7 @@ import json
 class StoryboardGenerator:
     @staticmethod
     def get_default_storyboard_prompt() -> str:
-        return """Using the provided characteristics, create a detailed 20-second storyboard for a high-energy Coca-Cola advertisement tailored to this individual. The storyboard should be optimized for AI video generation software (e.g., Sora, Runway, Minimax, Luma) and include the following details:
+        return """Using the provided characteristics, create a detailed 10-second storyboard for a high-energy Coca-Cola advertisement tailored to this individual. The storyboard should be optimized for AI video generation software (e.g., Sora, Runway, Minimax, Luma) and include the following details:
 Scene Breakdown – Provide a structured sequence of shots, ensuring smooth transitions and a compelling narrative arc.
 Camera Movements – Specify shot types to enhance the cinematic feel.
 Lighting & Mood – Define the lighting conditions and overall atmosphere.
@@ -17,6 +17,7 @@ Color Palette & Visual Style – Describe the aesthetic using Coca-Cola's signat
 Text & Branding Elements – Ensure Coca-Cola branding, tagline placement, and product visibility are naturally integrated within the visuals. Instead of using the persons name, describe him briefly DO not use emojis
 Describe the actions as easy as possible and as clear as possible
 Each scene should start with the description what the subject looks like physically.
+Create up to 3 scenes.
 
 Return the JSON object only, with each scene as a key."""
 

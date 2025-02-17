@@ -203,6 +203,27 @@ The goal is to extract deep insights from their Instagram content to craft an AI
         """
         print("Calling generate_complete_storyboard")
         try:
+            # Create JSON directory if it doesn't exist
+            json_dir = os.path.join(os.path.dirname(__file__), 'json')
+            os.makedirs(json_dir, exist_ok=True)
+
+            # Check if storyboard already exists for this file
+            base_name = filename.rsplit('.', 1)[0]
+            json_filename = os.path.join(json_dir, f"{base_name}_storyboard.json")
+            
+            try:
+                with open(json_filename, 'r') as f:
+                    existing_storyboard = f.read()
+                    scenes = StoryboardGenerator.validate_storyboard_json(existing_storyboard)
+                    # Generate the final video from the storyboard
+                    final_video = self.generate_videos_from_storyboard(scenes)
+                    return final_video
+                
+            except (FileNotFoundError, ValueError):
+                # Proceed with new storyboard generation if file doesn't exist
+                # or is invalid JSON
+                pass
+            
             # Step 1: Initial image analysis
             initial_analysis = await self.analyze_file(file_input, filename, instructions)
             
@@ -210,14 +231,102 @@ The goal is to extract deep insights from their Instagram content to craft an AI
             storyboard_prompt = StoryboardGenerator.get_default_storyboard_prompt()
             storyboard_json = await self.process_followup(initial_analysis, storyboard_prompt)
             print(storyboard_json)
-            
+        
+            # Write to JSON file in the dedicated directory
+            with open(json_filename, 'w') as f:
+                f.write(storyboard_json)
             # Step 3: Validate and parse the storyboard
             scenes = StoryboardGenerator.validate_storyboard_json(storyboard_json)
             
-            return {
-                "initial_analysis": initial_analysis,
-                "scenes": scenes
-            }
+            # Generate the final video from the storyboard
+            final_video = self.generate_videos_from_storyboard(scenes)
+            return final_video
             
         except Exception as e:
             raise Exception(f"Error generating storyboard: {str(e)}") 
+        
+    def generate_videos_from_storyboard(self, storyboard_json):
+        """
+        Generates videos for each scene in the storyboard and combines them.
+        
+        Args:
+            storyboard_json (dict): JSON containing scene descriptions
+            
+        Returns:
+            str: Path to the final combined video file, or None if generation fails
+        """
+        from hailuo import create_video_generation_task, query_video_status, download_video
+        import time
+        import os
+        
+        video_files = []
+        # Generate video for each scene (testing with first 2 scenes only)
+        for scene_num, scene_data in list(storyboard_json.items()):
+            print(f"\nProcessing {scene_num}...")
+            
+            # Construct prompt from scene data
+            prompt = f"""
+            {scene_data}
+            """
+            
+            # Generate video for this scene
+            timestamp = int(time.time())
+            output_file = os.path.join("./videos/tmp_videos", f"scene_{scene_num}_{timestamp}.mp4")
+            
+
+            print(prompt)
+            # Step 1: Create video generation task
+            task_id = create_video_generation_task(prompt)
+            print(task_id)
+            if task_id:
+                # Step 2: Poll for completion
+                while True:
+                    time.sleep(1)  # Wait between status checks
+                    status, file_id = query_video_status(task_id)
+                    
+                    if status == "Success" and file_id:
+                        # Step 3: Download the video
+                        download_video(file_id, output_file)
+                        video_files.append(output_file)
+                        break
+                    elif status == "Fail":
+                        print(f"Video generation failed for {scene_num}")
+                        break
+            else:
+                print(f"Failed to create video generation task for {scene_num}")
+        
+
+        #video_files = ["./videos/tmp_videos/test_video_01.mp4", "./videos/tmp_videos/test_video_02.mp4"]
+        if not video_files:
+            print("No videos were successfully generated")
+            return None
+        
+        # Combine videos if more than one was generated
+        if len(video_files) > 1:
+            try:
+                from moviepy import VideoFileClip, concatenate_videoclips
+                
+                # Load all video clips
+                clips = [VideoFileClip(file) for file in video_files]
+                
+                # Concatenate clips
+                final_clip = concatenate_videoclips(clips)
+                
+                # Write final video
+                output_path = f"./videos/merged_video.mp4"
+                final_clip.write_videofile(output_path)
+                
+                # Close clips
+                for clip in clips:
+                    clip.close()
+                
+                return output_path
+                
+            except Exception as e:
+                print(f"Error combining videos: {str(e)}")
+                return video_files[0]  # Return first video if combination fails
+        
+        # If only one video was generated, return its path as a string
+        # Returns str: Path to the generated video file (e.g. "./videos/tmp_videos/test_video_01.mp4")
+        return video_files[0]
+

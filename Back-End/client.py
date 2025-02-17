@@ -55,17 +55,12 @@ if __name__ == "__main__":
     try:
         result = generate_storyboard_from_image(
             api_url="http://localhost:8000",
-            image_path="/home/navid/Pictures/Screenshots/IG_profile_example.png"
+            image_path="/Users/danielrapoport/Desktop/Sundai Practice/AdvancedPersonalizationEngine/Back-End/pictures/IG_profile_example.png"
         )
         
-        print("\nInitial Analysis:")
-        print(result['initial_analysis'])
+        print("\nResult:")
+        print(result)
         
-        print("\nStoryboard Scenes:")
-        for scene_num, scene_details in result['scenes'].items():
-            print(f"\nScene {scene_num}:")
-            print(scene_details)
-            
     except requests.exceptions.RequestException as e:
         print(f"Error calling API: {e}")
     except KeyError as e:
