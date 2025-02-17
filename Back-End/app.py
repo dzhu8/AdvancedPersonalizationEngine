@@ -79,7 +79,6 @@ async def generate_storyboard(
     """
     try:
         file_data = await file.read()
-        import pdb; pdb.set_trace()
         result = await openai_helper.generate_complete_storyboard(
             file_data,
             filename=file.filename,
