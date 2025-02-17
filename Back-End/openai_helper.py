@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import mimetypes
 from storyboard_generator import StoryboardGenerator
 
+
 class OpenAIHelper:
     def __init__(self):
         # Load environment variables from .env file
@@ -36,18 +37,51 @@ class OpenAIHelper:
             instructions: Optional instructions for analysis
         """
         print("Calling analyze_file")
-        default_prompt = """I want to create a hyper-personalized advertisement based on an individual's Instagram profile. I will provide a selection of their pictures. Analyze these images and extract detailed insights about their personality, lifestyle, aesthetic, and brand affinity. Your analysis should cover the following key aspects: 
-Interests & Activities - Identify their hobbies, passions, and frequently engaged activities. 
-Visual Aesthetic & Color Palette - Describe the dominant tones, styling, and mood of their content. 
-Fashion & Personal Style - Note recurring clothing choices, accessories, and branding cues that define their fashion identity. 
-Brand Affinity & Product Preferences - Identify any brands, sponsorships, or frequently featured products in their posts. Location & Setting Preferences – Analyze recurring backdrops to determine preferred environments. 
-Personality & Expression - Examine facial expressions, body language, and engagement style. 
-Social & Lifestyle Indicators - Determine whether they engage in solo activities, group settings, family-oriented content, or influencer collaborations. 
-Emotional Tone & Vibe - Identify the overall emotional feel of their posts. 
-Media Type & Engagement Style - Note whether their content is video-heavy, photo-centric, or focused on reels/stories and analyze engagement style. 
-Potential Advertising Angles - Based on the extracted insights, suggest the best tone, visual style, and storytelling approach for a hyper-personalized ad that aligns naturally with their profile and resonates with their audience. 
-The goal is to extract deep insights from their Instagram content to craft an AI-generated video that seamlessly integrates with their aesthetic, lifestyle, and personality, making the advertisement feel natural, authentic, and engaging.
+
+        default_prompt = """Your job is to study the images and derive general insights about their personality, lifestyle, aesthetic,
+and brand preferences. While doing so, please respect their privacy and avoid disclosing any personal
+identifiable information.
+
+Specifically, from the provided images, focus on these key aspects:
+
+1. Interests & Activities:
+  - Identify recurring hobbies, passions, and activities that appear in their photos.
+
+2. Visual Aesthetic & Color Palette:
+  - Describe the dominant colors, styling, and ambiance that define their overall image aesthetic.
+
+3. Fashion & Personal Style:
+  - Note recurring clothing choices, accessories, or visible brand elements that reflect their style.
+
+4. Brand Affinity & Product Preferences:
+  - Observe any featured brands, sponsorships, or products that appear consistently across their photos.
+ 
+5. Location & Setting Preferences:
+  - Identify common backdrops or environments (e.g., urban, nature, home settings) that the individual
+    seems to prefer.
+
+6. Personality & Expression:
+  - Examine facial expressions, body language, or other cues that might suggest personality traits
+    or an overall vibe.
+
+7. Social & Lifestyle Indicators:
+  - Determine whether they appear with friends, family, or in group settings, or if they tend
+    to take solo photos.
+
+8. Emotional Tone & Mood:
+  - Identify the emotional feel of their content—e.g., playful, adventurous, calm, or energetic.
+
+9. Media Type & Engagement Style:
+  - Note whether the user prefers short videos, still images, reels/stories, etc., and speculate
+    on their engagement style.
+
+10. Advertising Angles:
+  - Based on these observations, propose the most suitable advertising angle, including
+    visual style, storytelling approach, and tone that would fit naturally with their
+    personality and aesthetic.
+
 """
+
 
         prompt = instructions if instructions else default_prompt
         try:
@@ -90,6 +124,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
             ],
             max_tokens=1500,
         )
+        print(response.choices[0].message.content)
         return response.choices[0].message.content
 
     async def _analyze_image_data(self, image_data: bytes, prompt: str) -> str:
@@ -113,6 +148,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
             ],
             max_tokens=1500,
         )
+        print(response.choices[0].message.content)
         return response.choices[0].message.content
 
     async def _analyze_pdf(self, pdf_data: bytes, prompt: str) -> str:
@@ -172,7 +208,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are an AI specialized in creating personalized advertising content."},
-                    {"role": "user", "content": "Here is the analysis of someone's Instagram profile:\n\n" + previous_analysis},
+                    {"role": "user", "content": "Here is the analysis:\n\n" + previous_analysis},
                     {"role": "user", "content": followup_prompt}
                 ],
                 response_format={ "type": "json_object" },
@@ -237,6 +273,7 @@ The goal is to extract deep insights from their Instagram content to craft an AI
                 f.write(storyboard_json)
             # Step 3: Validate and parse the storyboard
             scenes = StoryboardGenerator.validate_storyboard_json(storyboard_json)
+            print(scenes)
             
             # Generate the final video from the storyboard
             final_video = self.generate_videos_from_storyboard(scenes)
