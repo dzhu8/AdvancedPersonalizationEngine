@@ -80,15 +80,6 @@ Specifically, from the provided images, focus on these key aspects:
     visual style, storytelling approach, and tone that would fit naturally with their
     personality and aesthetic.
 
-**Important Considerations**:
-- Do not reveal personal details, identities, or contact information about the individual.
-- Keep the analysis general and focused on stylistic and lifestyle observations rather
- than sensitive personal data.
-- The final goal is to guide the creation of an AI-generated video advertisement that
- complements the individual’s authentic style and interests.
-
-Please provide a concise but thorough summary of these observations, and if you have
-any recommendations for how to tailor an ad based on these insights, please include them.
 """
 
 
@@ -217,7 +208,7 @@ any recommendations for how to tailor an ad based on these insights, please incl
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are an AI specialized in creating personalized advertising content."},
-                    {"role": "user", "content": "Here is the analysis of someone's Instagram profile:\n\n" + previous_analysis},
+                    {"role": "user", "content": "Here is the analysis:\n\n" + previous_analysis},
                     {"role": "user", "content": followup_prompt}
                 ],
                 response_format={ "type": "json_object" },
@@ -249,15 +240,19 @@ any recommendations for how to tailor an ad based on these insights, please incl
         print("Calling generate_complete_storyboard")
         try:
             # Step 1: Initial image analysis
+            import pdb; pdb.set_trace()
             initial_analysis = await self.analyze_file(file_input, filename, instructions)
             
             # Step 2: Generate storyboard
+            import pdb; pdb.set_trace()
             storyboard_prompt = StoryboardGenerator.get_default_storyboard_prompt()
             storyboard_json = await self.process_followup(initial_analysis, storyboard_prompt)
             print(storyboard_json)
             
             # Step 3: Validate and parse the storyboard
+            import pdb; pdb.set_trace()
             scenes = StoryboardGenerator.validate_storyboard_json(storyboard_json)
+            print(scenes)
             
             return {
                 "initial_analysis": initial_analysis,

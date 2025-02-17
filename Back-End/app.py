@@ -2,8 +2,11 @@ from fastapi import FastAPI, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from openai_helper import OpenAIHelper
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+
+app.mount("/videos", StaticFiles(directory="videos"), name="videos")
 
 # Add CORS middleware
 app.add_middleware(
@@ -76,6 +79,7 @@ async def generate_storyboard(
     """
     try:
         file_data = await file.read()
+        import pdb; pdb.set_trace()
         result = await openai_helper.generate_complete_storyboard(
             file_data,
             filename=file.filename,

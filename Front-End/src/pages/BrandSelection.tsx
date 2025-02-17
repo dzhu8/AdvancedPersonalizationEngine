@@ -53,8 +53,8 @@ const BrandSelection = () => {
     // Detect if we're on localhost
     const isLocalhost = window.location.hostname.includes("localhost");
     const uploadUrl = isLocalhost
-      ? "http://127.0.0.1:8000/process-screenshot"
-      : "https://sundai-backend.ryanhughes624.com/process-screenshot";
+      ? "http://127.0.0.1:8000/generate-storyboard"
+      : "https://sundai-backend.ryanhughes624.com/generate-storyboard";
 
     try {
       // 2. Set loading to true before starting the request
